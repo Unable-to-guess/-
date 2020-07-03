@@ -1,0 +1,49 @@
+"""
+          
+              功能:目标城市空气质量指数的计算                 
+                  运用 BeautifulSoup 解析网页：更好的解析网页
+
+"""
+import  requests
+from bs4 import BeautifulSoup
+
+def  get_html_text(city_str):
+    """
+     获取网页信息
+    """
+    url = 'http://www.pm25.com/city/' +  city_str  + '.html'
+
+    r = requests.get(url,timeout = 30)
+    #获取该网页所有信息！！
+    soup = BeautifulSoup(r.text,'lxml')
+
+    li_list = soup.find_all('li',{'class':'pj_area_data_item pj_area_data_item_darkbg'})
+
+    digit_tuple1 = []
+    digit_tuple2 = []
+    for i in range(7):
+        li_content = li_list[i]
+        location_city = li_content.find_all('a',{'class':'pjadt_location'})
+        digit_city = li_content.find_all('span',{'class':'pjadt_aqi'})
+
+
+
+        digit_tuple1.append(location_city)
+        digit_tuple2.append(digit_city)
+    return digit_tuple1,digit_tuple2
+
+def main():
+
+    city_str = input('请输入城市拼音:')
+
+    digit_tuple1,digit_tuple2 = get_html_text(city_str)
+
+
+
+    print(digit_tuple1)
+    print(digit_tuple2)
+
+
+
+if __name__ =='__main__':
+    main()
